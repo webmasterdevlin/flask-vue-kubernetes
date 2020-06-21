@@ -73,13 +73,13 @@ $ kubectl apply -f ./kubernetes/secret.yml
 Create deployment:
 
 ```sh
-$ kubectl create -f ./kubernetes/postgres-deployment.yml
+$ kubectl apply -f ./kubernetes/postgres-deployment.yml
 ```
 
 Create the service:
 
 ```sh
-$ kubectl create -f ./kubernetes/postgres-service.yml
+$ kubectl apply -f ./kubernetes/postgres-service.yml
 ```
 
 Create the database:
@@ -87,7 +87,7 @@ Create the database:
 ```sh
 $ kubectl get pods
 $ POSTGRES_POD_NAME=$(kubectl get pod -l service=postgres -o jsonpath="{.items[0].metadata.name}")
-$ kubectl exec POSTGRES_POD_NAME --stdin --tty -- createdb -U postgres books
+$ kubectl exec $POSTGRES_POD_NAME --stdin --tty -- createdb -U postgres books
 ```
 
 #### Flask
@@ -105,13 +105,13 @@ $ docker push $DOCKERHUB_NAME/flask-kubernetes
 Create the deployment:
 
 ```sh
-$ kubectl create -f ./kubernetes/flask-deployment.yml
+$ kubectl apply -f ./kubernetes/flask-deployment.yml
 ```
 
 Create the service:
 
 ```sh
-$ kubectl create -f ./kubernetes/flask-service.yml
+$ kubectl apply -f ./kubernetes/flask-service.yml
 ```
 
 Apply the migrations and seed the database:
@@ -129,13 +129,14 @@ Enable and apply:
 
 ```sh
 $ minikube addons enable ingress
+$ docker-compose up -d --build
 $ kubectl apply -f ./kubernetes/minikube-ingress.yml
 ```
 
 Add entry to _/etc/hosts_ file:
 
 ```
-<MINIKUBE_IP> hello.world
+$ echo "$(minikube ip) hello.world" | sudo tee -a /etc/hosts
 ```
 
 Try it out:
@@ -148,10 +149,10 @@ Try it out:
 Build and push the image to Docker Hub:
 
 ```sh
-$ docker build -t webmasterdevlin/vue-kubernetes ./services/client \
+$ docker build -t $DOCKERHUB_NAME/vue-kubernetes ./services/client \
     -f ./services/client/Dockerfile-minikube
 
-$ docker push webmasterdevlin/vue-kubernetes
+$ docker push $DOCKERHUB_NAME/vue-kubernetes
 ```
 
 > Again, replace `webmasterdevlin` with your Docker Hub namespace in the above commands as well as in _kubernetes/vue-deployment.yml_
@@ -159,13 +160,27 @@ $ docker push webmasterdevlin/vue-kubernetes
 Create the deployment:
 
 ```sh
-$ kubectl create -f ./kubernetes/vue-deployment.yml
+$ kubectl apply -f ./kubernetes/vue-deployment.yml
 ```
 
 Create the service:
 
 ```sh
-$ kubectl create -f ./kubernetes/vue-service.yml
+$ kubectl apply -f ./kubernetes/vue-service.yml
 ```
 
 Try it out at [http://hello.world/](http://hello.world/).
+
+
+Add another Flask Pod to the cluster
+
+```sh
+$ kubectl scale deployment flask --replicas=2
+$ kubectl get deployments flask
+```
+
+Make a few requests to the service:
+
+```sh
+$ for ((i=1;i<=10;i++)); do curl http://hello.world/books/ping; done
+```
