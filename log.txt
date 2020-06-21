@@ -1,0 +1,297 @@
+➜  flask-vue-kubernetes docker-compose up -d --build
+Creating network "flask-vue-kubernetes_default" with the default driver
+Building postgres
+Step 1/2 : FROM postgres:12.1-alpine
+12.1-alpine: Pulling from library/postgres
+c9b1b535fdd9: Already exists
+d1030c456d04: Pull complete
+d1d0211bbd9a: Pull complete
+bb8060dfd57b: Pull complete
+0905212eea51: Pull complete
+8a126b91cf92: Pull complete
+d45f87d751e9: Pull complete
+2148a93fc26e: Pull complete
+Digest: sha256:686fc517b2b979f972aa2cdbdb4e3392f28b7d6e6dc31054c05144863e6d9098
+Status: Downloaded newer image for postgres:12.1-alpine
+ ---> 76780864f8de
+Step 2/2 : ADD create.sql /docker-entrypoint-initdb.d
+ ---> 2806ac88fada
+
+Successfully built 2806ac88fada
+Successfully tagged flask-vue-kubernetes_postgres:latest
+Building server
+Step 1/9 : FROM python:3.8.1-slim
+3.8.1-slim: Pulling from library/python
+bc51dd8edc1b: Downloading [================================>                  ]  17.35MB/27.09MB
+bc51dd8edc1b: Pull complete                                                                      dc4aa7361f66: Pull complete                                                                      f7d31f0d4202: Pull complete                                                                      edfb78ef674e: Pull complete
+9630f24835d2: Pull complete
+Digest: sha256:73f3903470a6e55202a6bb989c23b047487eb1728feba655410076da24106838
+Status: Downloaded newer image for python:3.8.1-slim
+ ---> b99890b7a7dc
+Step 2/9 : RUN apt-get update &&     apt-get -y install netcat &&     apt-get clean
+ ---> Running in 64df41b6d2ec
+Get:1 http://security.debian.org/debian-security buster/updates InRelease [65.4 kB]
+Get:2 http://deb.debian.org/debian buster InRelease [121 kB]
+Get:3 http://deb.debian.org/debian buster-updates InRelease [51.9 kB]
+Get:4 http://security.debian.org/debian-security buster/updates/main amd64 Packages [203 kB]
+Get:5 http://deb.debian.org/debian buster/main amd64 Packages [7905 kB]
+Get:6 http://deb.debian.org/debian buster-updates/main amd64 Packages [7868 B]
+Fetched 8355 kB in 3s (2819 kB/s)
+Reading package lists...
+Reading package lists...
+Building dependency tree...
+Reading state information...
+The following additional packages will be installed:
+  netcat-traditional
+The following NEW packages will be installed:
+  netcat netcat-traditional
+0 upgraded, 2 newly installed, 0 to remove and 15 not upgraded.
+Need to get 75.9 kB of archives.
+After this operation, 156 kB of additional disk space will be used.
+Get:1 http://deb.debian.org/debian buster/main amd64 netcat-traditional amd64 1.10-41.1 [66.9 kB]
+Get:2 http://deb.debian.org/debian buster/main amd64 netcat all 1.10-41.1 [9034 B]
+debconf: delaying package configuration, since apt-utils is not installed
+Fetched 75.9 kB in 0s (180 kB/s)
+Selecting previously unselected package netcat-traditional.
+(Reading database ... 6828 files and directories currently installed.)
+Preparing to unpack .../netcat-traditional_1.10-41.1_amd64.deb ...
+Unpacking netcat-traditional (1.10-41.1) ...
+Selecting previously unselected package netcat.
+Preparing to unpack .../netcat_1.10-41.1_all.deb ...
+Unpacking netcat (1.10-41.1) ...
+Setting up netcat-traditional (1.10-41.1) ...
+update-alternatives: using /bin/nc.traditional to provide /bin/nc (nc) in auto mode
+update-alternatives: warning: skip creation of /usr/share/man/man1/nc.1.gz because associated file /usr/share/man/man1/nc.traditional.1.gz (of link group nc) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/man1/netcat.1.gz because associated file /usr/share/man/man1/nc.traditional.1.gz (of link group nc) doesn't exist
+Setting up netcat (1.10-41.1) ...
+Removing intermediate container 64df41b6d2ec
+ ---> 57ac4d6881f2
+Step 3/9 : WORKDIR /usr/src/app
+ ---> Running in 78960cf7f02d
+Removing intermediate container 78960cf7f02d
+ ---> 6d50689198a5
+Step 4/9 : COPY ./requirements.txt /usr/src/app/requirements.txt
+ ---> 7bd11d81cb20
+Step 5/9 : RUN pip install -r requirements.txt
+ ---> Running in 9ad10db61dd8
+Collecting Flask==1.1.1
+  Downloading Flask-1.1.1-py2.py3-none-any.whl (94 kB)
+Collecting Flask-Cors==3.0.8
+  Downloading Flask_Cors-3.0.8-py2.py3-none-any.whl (14 kB)
+Collecting flask-migrate==2.5.2
+  Downloading Flask_Migrate-2.5.2-py2.py3-none-any.whl (13 kB)
+Collecting Flask-SQLAlchemy==2.4.1
+  Downloading Flask_SQLAlchemy-2.4.1-py2.py3-none-any.whl (17 kB)
+Collecting gunicorn==20.0.4
+  Downloading gunicorn-20.0.4-py2.py3-none-any.whl (77 kB)
+Collecting psycopg2-binary==2.8.4
+  Downloading psycopg2_binary-2.8.4-cp38-cp38-manylinux1_x86_64.whl (3.0 MB)
+Collecting itsdangerous>=0.24
+  Downloading itsdangerous-1.1.0-py2.py3-none-any.whl (16 kB)
+Collecting click>=5.1
+  Downloading click-7.1.2-py2.py3-none-any.whl (82 kB)
+Collecting Jinja2>=2.10.1
+  Downloading Jinja2-2.11.2-py2.py3-none-any.whl (125 kB)
+Collecting Werkzeug>=0.15
+  Downloading Werkzeug-1.0.1-py2.py3-none-any.whl (298 kB)
+Collecting Six
+  Downloading six-1.15.0-py2.py3-none-any.whl (10 kB)
+Collecting alembic>=0.7
+  Downloading alembic-1.4.2.tar.gz (1.1 MB)
+  Installing build dependencies: started
+  Installing build dependencies: finished with status 'done'
+  Getting requirements to build wheel: started
+  Getting requirements to build wheel: finished with status 'done'
+    Preparing wheel metadata: started
+    Preparing wheel metadata: finished with status 'done'
+Collecting SQLAlchemy>=0.8.0
+  Downloading SQLAlchemy-1.3.17-cp38-cp38-manylinux2010_x86_64.whl (1.3 MB)
+Requirement already satisfied: setuptools>=3.0 in /usr/local/lib/python3.8/site-packages (from gunicorn==20.0.4->-r requirements.txt (line 5)) (45.1.0)
+Collecting MarkupSafe>=0.23
+  Downloading MarkupSafe-1.1.1-cp38-cp38-manylinux1_x86_64.whl (32 kB)
+Collecting python-dateutil
+  Downloading python_dateutil-2.8.1-py2.py3-none-any.whl (227 kB)
+Collecting Mako
+  Downloading Mako-1.1.3-py2.py3-none-any.whl (75 kB)
+Collecting python-editor>=0.3
+  Downloading python_editor-1.0.4-py3-none-any.whl (4.9 kB)
+Building wheels for collected packages: alembic
+  Building wheel for alembic (PEP 517): started
+  Building wheel for alembic (PEP 517): finished with status 'done'
+  Created wheel for alembic: filename=alembic-1.4.2-py2.py3-none-any.whl size=159543 sha256=e417ba840d42777efead86594d20e825db0eece4445c70a87031bc10e54d7c97
+  Stored in directory: /root/.cache/pip/wheels/70/08/70/cea787a7e95817b831469fa42af076046e55a05f7c94657463
+Successfully built alembic
+Installing collected packages: itsdangerous, click, MarkupSafe, Jinja2, Werkzeug, Flask, Six, Flask-Cors, SQLAlchemy, Flask-SQLAlchemy, python-dateutil, Mako, python-editor, alembic, flask-migrate, gunicorn, psycopg2-binary
+Successfully installed Flask-1.1.1 Flask-Cors-3.0.8 Flask-SQLAlchemy-2.4.1 Jinja2-2.11.2 Mako-1.1.3 MarkupSafe-1.1.1 SQLAlchemy-1.3.17 Six-1.15.0 Werkzeug-1.0.1 alembic-1.4.2 click-7.1.2 flask-migrate-2.5.2 gunicorn-20.0.4 itsdangerous-1.1.0 psycopg2-binary-2.8.4 python-dateutil-2.8.1 python-editor-1.0.4
+WARNING: You are using pip version 20.0.2; however, version 20.1.1 is available.
+You should consider upgrading via the '/usr/local/bin/python -m pip install --upgrade pip' command.
+Removing intermediate container 9ad10db61dd8
+ ---> 01a4f877dfe5
+Step 6/9 : COPY ./entrypoint.sh /usr/src/app/entrypoint.sh
+ ---> fd054640e090
+Step 7/9 : RUN chmod +x /usr/src/app/entrypoint.sh
+ ---> Running in c86e6ab1363c
+Removing intermediate container c86e6ab1363c
+ ---> de6821440958
+Step 8/9 : COPY . /usr/src/app
+ ---> 9d5b164abca6
+Step 9/9 : CMD ["/usr/src/app/entrypoint.sh"]
+ ---> Running in 2932b8c96e3f
+Removing intermediate container 2932b8c96e3f
+ ---> 1052516e5be2
+
+Successfully built 1052516e5be2
+Successfully tagged flask-vue-kubernetes_server:latest
+Building client
+Step 1/9 : FROM node:13.7.0-alpine
+13.7.0-alpine: Pulling from library/node
+c9b1b535fdd9: Already exists
+07b35de5c8a5: Pull complete
+a0b0418c013a: Pull complete
+f4ac4306c751: Pull complete
+Digest: sha256:b82067eea7667f53747a282f0c1aa66037570bceea4a9c03b4ef963c11d59aea
+Status: Downloaded newer image for node:13.7.0-alpine
+ ---> b809734bb743
+Step 2/9 : RUN npm install -g http-server
+ ---> Running in b197b6c39d78
+/usr/local/bin/hs -> /usr/local/lib/node_modules/http-server/bin/http-server
+/usr/local/bin/http-server -> /usr/local/lib/node_modules/http-server/bin/http-server
++ http-server@0.12.3
+added 23 packages from 35 contributors in 2.909s
+Removing intermediate container b197b6c39d78
+ ---> 24c40199de86
+Step 3/9 : WORKDIR /app
+ ---> Running in c358a85718d0
+Removing intermediate container c358a85718d0
+ ---> 599111b80b3b
+Step 4/9 : COPY package*.json ./
+ ---> 43cb62a8cc04
+Step 5/9 : RUN npm install
+ ---> Running in 5c9571bef8b3
+npm WARN deprecated extract-text-webpack-plugin@3.0.2: Deprecated. Please use https://github.com/webpack-contrib/mini-css-extract-plugin
+npm WARN deprecated browserslist@2.11.3: Browserslist 2 could fail on reading Browserslist >3.0 config used in other tools.
+npm WARN deprecated chokidar@2.1.8: Chokidar 2 will break on node v14+. Upgrade to chokidar 3 with 15x less dependencies.
+npm WARN deprecated core-js@2.6.11: core-js@<3 is no longer maintained and not recommended for usage due to the number of issues. Please, upgrade your dependencies to the actual version of core-js@3.
+npm WARN deprecated bfj-node4@5.3.1: Switch to the `bfj` package for fixes and new features!
+npm WARN deprecated fsevents@1.2.13: fsevents 1 will break on node v14+ and could be using insecure binaries. Upgrade to fsevents 2.
+npm WARN deprecated browserslist@1.7.7: Browserslist 2 could fail on reading Browserslist >3.0 config used in other tools.
+npm WARN deprecated circular-json@0.3.3: CircularJSON is in maintenance only, flatted is its successor.
+npm WARN deprecated resolve-url@0.2.1: https://github.com/lydell/resolve-url#deprecated
+npm WARN deprecated urix@0.1.0: Please see https://github.com/lydell/urix#deprecated
+
+> core-js@2.6.11 postinstall /app/node_modules/core-js
+> node -e "try{require('./postinstall')}catch(e){}"
+
+Thank you for using core-js ( https://github.com/zloirock/core-js ) for polyfilling JavaScript standard library!
+
+The project needs your help! Please consider supporting of core-js on Open Collective or Patreon: 
+> https://opencollective.com/core-js 
+> https://www.patreon.com/zloirock 
+
+Also, the author of core-js ( https://github.com/zloirock ) is looking for a good job -)
+
+
+> ejs@2.7.4 postinstall /app/node_modules/ejs
+> node ./postinstall.js
+
+Thank you for installing EJS: built with the Jake JavaScript build tool (https://jakejs.com/)
+
+
+> uglifyjs-webpack-plugin@0.4.6 postinstall /app/node_modules/webpack/node_modules/uglifyjs-webpack-plugin
+> node lib/post_install.js
+
+
+> bootstrap-vue@2.2.2 postinstall /app/node_modules/bootstrap-vue
+> opencollective || exit 0
+
+                                                             
+                          ;iiiiiiiiiiSSSSSSSSiiiiiiiiii;     
+                          .rXXXXXXXXXrrrrrrrSXXXXXXXXXr.     
+                          :iXXXXXXXX2. ;;;;, r3XXXXXXXi;     
+                         ,rSSSSSXXXX2..sSSi: r3XXXSSSSSr,    
+                          ,siiiiS2XX2. :;;:,.rXX2Siiiis,     
+                           ,riiiii2X2..5XXXi .22iiiiir,      
+                            .riiiii22..::::,,r2iiiiir.       
+                             .riiiii5SSiiiiS22iiiiir.        
+                               ;iiiii5X3333X5iiiii;          
+                                :iiiiiSXXXXSiiiii:           
+                                 :siiiiSXXSiiiis:            
+                                  ,siiiiiiiiiis,             
+                                   .riiiiiiiir.              
+                                    .riiiiiir.               
+                                     .;iiii;.                
+                                       ;ii;                  
+                                        ::                   
+                                         
+                       Thanks for installing bootstrap-vue 
+                 Please consider donating to our open collective
+                        to help us maintain this package.
+                                         
+                           Number of contributors: 257
+                              Number of backers: 144
+                              Annual budget: $8,087
+                             Current balance: $4,164
+                                         
+              Donate: https://opencollective.com/bootstrap-vue/donate
+                                         
+npm WARN notsup Unsupported engine for watchpack-chokidar2@2.0.0: wanted: {"node":"<8.10.0"} (current: {"node":"13.7.0","npm":"6.13.6"})
+npm WARN notsup Not compatible with your version of node/npm: watchpack-chokidar2@2.0.0
+npm WARN optional SKIPPING OPTIONAL DEPENDENCY: fsevents@~2.1.2 (node_modules/chokidar/node_modules/fsevents):
+npm WARN notsup SKIPPING OPTIONAL DEPENDENCY: Unsupported platform for fsevents@2.1.3: wanted {"os":"darwin","arch":"any"} (current: {"os":"linux","arch":"x64"})
+npm WARN optional SKIPPING OPTIONAL DEPENDENCY: fsevents@^1.2.7 (node_modules/watchpack-chokidar2/node_modules/chokidar/node_modules/fsevents):
+npm WARN notsup SKIPPING OPTIONAL DEPENDENCY: Unsupported platform for fsevents@1.2.13: wanted {"os":"darwin","arch":"any"} (current: {"os":"linux","arch":"x64"})
+npm WARN optional SKIPPING OPTIONAL DEPENDENCY: fsevents@^1.2.7 (node_modules/webpack-dev-server/node_modules/chokidar/node_modules/fsevents):
+npm WARN notsup SKIPPING OPTIONAL DEPENDENCY: Unsupported platform for fsevents@1.2.13: wanted {"os":"darwin","arch":"any"} (current: {"os":"linux","arch":"x64"})
+
+added 1412 packages from 734 contributors and audited 1419 packages in 35.434s
+
+29 packages are looking for funding
+  run `npm fund` for details
+
+found 15 vulnerabilities (3 low, 8 moderate, 4 high)
+  run `npm audit fix` to fix them, or `npm audit` for details
+Removing intermediate container 5c9571bef8b3
+ ---> 123c3657be68
+Step 6/9 : COPY . .
+ ---> 5d04a48e9cfc
+Step 7/9 : RUN ROOT_API=http://localhost:5001 npm run build
+ ---> Running in ce639dbe6d9c
+
+> client@1.0.0 build /app
+> node build/build.js
+
+Hash: 7b6805053ea75355b4d4
+Version: webpack 3.12.0
+Time: 21279ms
+                                                  Asset       Size  Chunks                    Chunk Names
+               static/js/vendor.12f157baa08da9ae0383.js     643 kB       0  [emitted]  [big]  vendor
+                  static/js/app.f4b359ff7255e9dde0a4.js    7.71 kB       1  [emitted]         app
+             static/js/manifest.2ae2e69a05c33dfc65f8.js  857 bytes       2  [emitted]         manifest
+    static/css/app.ed7f9cb47a5fbbf0524c5f1acaa42881.css     176 kB       1  [emitted]         app
+static/css/app.ed7f9cb47a5fbbf0524c5f1acaa42881.css.map     296 kB          [emitted]         
+           static/js/vendor.12f157baa08da9ae0383.js.map    2.37 MB       0  [emitted]         vendor
+              static/js/app.f4b359ff7255e9dde0a4.js.map    32.5 kB       1  [emitted]         app
+         static/js/manifest.2ae2e69a05c33dfc65f8.js.map    4.97 kB       2  [emitted]         manifest
+                                             index.html  511 bytes          [emitted]         
+
+  Build complete.
+
+  Tip: built files are meant to be served over an HTTP server.
+  Opening index.html over file:// won't work.
+
+Removing intermediate container ce639dbe6d9c
+ ---> 098a2b1043ac
+Step 8/9 : EXPOSE 8080
+ ---> Running in 2e18a8d497f0
+Removing intermediate container 2e18a8d497f0
+ ---> 83ccef379d68
+Step 9/9 : CMD [ "http-server", "dist" ]
+ ---> Running in 71e26399a4a8
+Removing intermediate container 71e26399a4a8
+ ---> a2f363ebb126
+
+Successfully built a2f363ebb126
+Successfully tagged flask-vue-kubernetes_client:latest
+Creating flask-vue-kubernetes_postgres_1 ... done
+Creating flask-vue-kubernetes_server_1   ... done
+Creating flask-vue-kubernetes_client_1   ... done

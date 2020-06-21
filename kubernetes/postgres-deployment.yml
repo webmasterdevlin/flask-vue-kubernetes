@@ -18,28 +18,28 @@ spec:
         service: postgres
     spec:
       containers:
-      - name: postgres
-        image: postgres:12.1-alpine
-        env:
-          - name: POSTGRES_USER
-            valueFrom:
-              secretKeyRef:
-                name: postgres-credentials
-                key: user
-          - name: POSTGRES_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: postgres-credentials
-                key: password
-        volumeMounts:
-        - mountPath: /var/lib/postgresql/data
-          name: postgres-volume-mount
+        - name: postgres
+          image: postgres:12.3-alpine
+          env:
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-credentials
+                  key: user
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-credentials
+                  key: password
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: postgres-volume-mount
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler
       securityContext: {}
       terminationGracePeriodSeconds: 30
       volumes:
-      - name: postgres-volume-mount
-        persistentVolumeClaim:
-          claimName: postgres-pvc
+        - name: postgres-volume-mount
+          persistentVolumeClaim:
+            claimName: postgres-pvc

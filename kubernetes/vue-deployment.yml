@@ -18,12 +18,12 @@ spec:
         app: vue
     spec:
       containers:
-      - image: mjhea0/vue-kubernetes:latest
-        imagePullPolicy: Always
-        name: vue
-        resources: {}
-        terminationMessagePath: /dev/termination-log
-        terminationMessagePolicy: File
+        - image: webmasterdevlin/vue-kubernetes:latest
+          imagePullPolicy: Always
+          name: vue
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler
