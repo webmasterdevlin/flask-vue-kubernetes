@@ -40,6 +40,8 @@ Install and run [Minikube](https://kubernetes.io/docs/setup/minikube/):
 Start the cluster:
 
 ```sh
+$ minikube start --vm-driver=hyperkit
+or
 $ minikube start --vm-driver=virtualbox
 $ minikube dashboard
 ```
