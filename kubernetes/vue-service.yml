@@ -4,10 +4,11 @@ metadata:
   name: vue
   labels:
     service: vue
-  name: vue
 spec:
+  type: ClusterIP
   selector:
     app: vue
+
   ports:
-  - port: 8080
-    targetPort: 8080
+    - port: 8080
+      targetPort: 8080

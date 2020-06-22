@@ -133,6 +133,7 @@ Add entry to _/etc/hosts_ file:
 
 ```
 <MINIKUBE_IP> hello.world
+hello.world entry should only be mapped once to an IP
 ```
 
 Try it out:

@@ -3,9 +3,10 @@ kind: Ingress
 metadata:
   name: minikube-ingress
   annotations:
+    ingress.kubernetes.io/rewrite-target: /
 spec:
   rules:
-    - host: hello.world
+    - host: hello.world # Optional for demo. Ingress will expect this url.
       http:
         paths:
           - path: /

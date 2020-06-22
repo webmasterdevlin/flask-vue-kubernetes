@@ -129,15 +129,16 @@ Enable and apply:
 
 ```sh
 $ minikube addons enable ingress
-$ docker-compose up -d --build
 $ kubectl apply -f ./kubernetes/minikube-ingress.yml
 ```
 
 Add entry to _/etc/hosts_ file:
 
+
 ```
 $ echo "$(minikube ip) hello.world" | sudo tee -a /etc/hosts
 ```
+Note: hello.world entry should only be mapped once to an IP. You can edit /etc/hosts anytime
 
 Try it out:
 
@@ -149,8 +150,7 @@ Try it out:
 Build and push the image to Docker Hub:
 
 ```sh
-$ docker build -t $DOCKERHUB_NAME/vue-kubernetes ./services/client \
-    -f ./services/client/Dockerfile-minikube
+$ docker build -t $DOCKERHUB_NAME/vue-kubernetes ./services/client -f ./services/client/Dockerfile-minikube
 
 $ docker push $DOCKERHUB_NAME/vue-kubernetes
 ```
