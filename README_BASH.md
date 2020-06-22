@@ -37,12 +37,25 @@ Install and run [Minikube](https://kubernetes.io/docs/setup/minikube/):
 1. Install and Set Up [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) to deploy and manage apps on Kubernetes
 1. Install [Minikube](https://github.com/kubernetes/minikube/releases)
 
+Toggle hypervisor using Powershell run as admin:
+
+```sh
+$ bcdedit /set hypervisorlaunchtype off
+```
+
 Start the cluster:
 
 ```sh
-$ minikube start --vm-driver=hyperkit
+    - OSX
+$ minikube config set driver hyperkit
 or
-$ minikube start --vm-driver=virtualbox
+    - Windows
+$ minikube config set driver hyperv
+or
+    - Linux
+$ minikube config set driver virtualbox
+
+$ minikube start
 $ minikube dashboard
 ```
 
@@ -134,10 +147,10 @@ $ kubectl apply -f ./kubernetes/minikube-ingress.yml
 
 Add entry to _/etc/hosts_ file:
 
-
 ```
 $ echo "$(minikube ip) hello.world" | sudo tee -a /etc/hosts
 ```
+
 Note: hello.world entry should only be mapped once to an IP. You can edit /etc/hosts anytime
 
 Try it out:
@@ -170,7 +183,6 @@ $ kubectl apply -f ./kubernetes/vue-service.yml
 ```
 
 Try it out at [http://hello.world/](http://hello.world/).
-
 
 Add another Flask Pod to the cluster
 
