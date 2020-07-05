@@ -20,6 +20,7 @@ spec:
       containers:
         - name: postgres
           image: postgres:12.3-alpine
+          resources: {}
           env:
             - name: POSTGRES_USER
               valueFrom:
